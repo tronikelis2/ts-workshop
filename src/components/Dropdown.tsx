@@ -1,30 +1,33 @@
 import { ChangeEventHandler, Dispatch, SetStateAction } from "react";
 
-export type SortValue = "asc" | "desc";
-
-type DropdownProps = {
-    selectedValue: SortValue;
-    onSelectedChange: Dispatch<SetStateAction<SortValue>>;
+type Option<T extends string> = {
+    value: T;
+    title: string;
 };
 
-const SORT_OPTIONS = [
-    { value: "asc", title: "Id ⬆️" },
-    { value: "desc", title: "Id ⬇️" },
-];
+type Props<T extends string> = {
+    options: Array<Option<T>>;
+    selectedValue: T;
+    onSelectedChange: Dispatch<SetStateAction<T>>;
+};
 
-const Dropdown = ({ selectedValue, onSelectedChange }: DropdownProps) => {
-    const renderOption = ({ value, title }: (typeof SORT_OPTIONS)[number]) => {
+const Dropdown = <T extends string>({
+    selectedValue,
+    onSelectedChange,
+    options,
+}: Props<T>) => {
+    const renderOption = ({ value, title }: Option<T>) => {
         return <option value={value}>{title}</option>;
     };
 
     const handleChange: ChangeEventHandler<HTMLSelectElement> = event => {
-        onSelectedChange(event.target.value as SortValue);
+        onSelectedChange(event.target.value as T);
     };
 
     return (
         <div style={{ marginTop: 10 }}>
             <select value={selectedValue} onChange={handleChange}>
-                {SORT_OPTIONS.map(renderOption)}
+                {options.map(renderOption)}
             </select>
         </div>
     );

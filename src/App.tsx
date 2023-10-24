@@ -4,20 +4,20 @@ import UserDetails from "./components/UserDetails";
 import { getUsers } from "./data/apiCalls";
 import { transformUsers } from "./data/transformers/user";
 import HighlightWrapper from "./components/HighlightWrapper";
-import Dropdown, { SortValue } from "./components/Dropdown";
+import Dropdown from "./components/Dropdown";
+import { UiState } from "./constants/uiState";
 
 const App = () => {
     const [userList, setUserList] = useState<ReturnType<typeof transformUsers>>(
         []
     );
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [isError, setIsError] = useState(false);
-    const [selectedSort, setSelectedSort] = useState<SortValue>("asc");
+    const [selectedSort, setSelectedSort] = useState<"asc" | "desc">("asc");
+
+    const [uiState, setUiState] = useState(UiState.Pending);
 
     const handleFetchData = useCallback(async () => {
-        setIsError(false);
-        setIsLoading(true);
+        setUiState(UiState.Pending);
 
         try {
             const { data } = await getUsers();
@@ -27,10 +27,10 @@ const App = () => {
             setUserList(transformedResponse);
         } catch (error) {
             console.log(error);
-            setIsError(true);
+            setUiState(UiState.Error);
         }
 
-        setIsLoading(false);
+        setUiState(UiState.Success);
     }, []);
 
     const sortedUsers = userList.sort((a, b) => {
@@ -63,14 +63,18 @@ const App = () => {
         );
     };
 
-    if (isLoading) return <div>Loading...</div>;
+    if (uiState === UiState.Loading) return <div>Loading...</div>;
 
-    if (isError) return <div>Something went wrong...</div>;
+    if (uiState === UiState.Error) return <div>Something went wrong...</div>;
 
     return (
         <div>
             <button onClick={handleFetchData}>♻️</button>
             <Dropdown
+                options={[
+                    { value: "asc", title: "Asc" },
+                    { value: "desc", title: "Desc" },
+                ]}
                 selectedValue={selectedSort}
                 onSelectedChange={setSelectedSort}
             />

@@ -1,4 +1,5 @@
-import { GetUsersJSON } from "../apiCalls";
+import { UserDto } from "../../types/dtos/user";
+import { UserModel } from "../../types/models/user";
 
 const transformUser = ({
     id,
@@ -6,7 +7,7 @@ const transformUser = ({
     first_name,
     last_name,
     avatar,
-}: GetUsersJSON["data"][number]) => ({
+}: UserDto): UserModel => ({
     id,
     email,
     firstName: first_name,
@@ -14,5 +15,5 @@ const transformUser = ({
     avatar,
 });
 
-export const transformUsers = (users: GetUsersJSON["data"]) =>
+export const transformUsers = (users: Array<UserDto>) =>
     users.map(transformUser);
