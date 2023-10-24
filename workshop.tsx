@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 // ❔ Javascript - dynamically typed language
 // ❔ Typescript - statically and strictly typed extension of Javascript
